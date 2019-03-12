@@ -1,0 +1,61 @@
+{
+  "name": "influencers-service-bus",
+  "version": "1.0.5",
+  "description": "",
+  "main": "build/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon --watch build ./build/index.js --exec babel-node",
+    "build": "nodemon --ext ts --watch ./src/ --ignore node_modules/ --ignore .git --ignore build/ --exec tsc"
+  },
+  "nyc": {
+    "include": [
+      "src/**/*.ts",
+      "src/**/*.tsx"
+    ],
+    "extension": [
+      ".ts",
+      ".tsx"
+    ],
+    "require": [
+      "ts-node/register"
+    ],
+    "reporter": [
+      "text-summary",
+      "html"
+    ],
+    "sourceMap": true,
+    "instrument": true
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gastonrd7/service-bus.git"
+  },
+  "keywords": [
+    "influencers-service-bus"
+  ],
+  "author": "RuizDiaz",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gastonrd7/service-bus/issues"
+  },
+  "homepage": "https://github.com/gastonrd7/service-bus#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^10.12.12",
+    "@types/request-promise": "^4.1.42",
+    "@types/uuid": "^3.4.4",
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-stage-3": "^6.24.1",
+    "influencers-models": "^1.1.0",
+    "inversify": "^4.14.0",
+    "nodemon": "^1.18.4",
+    "nyc": "^13.1.0",
+    "reflect-metadata": "^0.1.12",
+    "ts-nats": "^1.0.4",
+    "ts-node": "^7.0.1",
+    "typescript": "^3.1.3",
+    "winston": "^3.1.0"
+  }
+}
