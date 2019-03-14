@@ -6,6 +6,8 @@ import requestPayload from '../../constants/requestPayload'
 import requestResponse from '../../constants/requestResponse'
 import Guid from '../../../../utils/guid';
 import Logger from '../../../../utils/logger';
+import SocialMediaRequestPayload from '../../constants/socialMedia/socialMediaRequestPayload';
+import SocialMediaRequestResponse from '../../constants/socialMedia/socialMediaRequestResponse';
 
 
 @injectable()
@@ -47,7 +49,7 @@ export default class NatsMessaginBus implements ImessagingBus {
         await this._natsClient.publish(subject, JSON.stringify( message));
     }
 
-    public async request(subject: string, timeout: number, message: requestPayload):Promise<requestResponse>
+    public async request(subject: string, timeout: number, message: requestPayload | SocialMediaRequestPayload):Promise<requestResponse | SocialMediaRequestResponse>
     {
         let responseMsg = await this._natsClient.request(subject, timeout, JSON.stringify( message ));
 

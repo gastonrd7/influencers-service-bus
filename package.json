@@ -1,10 +1,9 @@
 {
   "name": "influencers-service-bus",
-  "version": "1.0.5",
+  "version": "1.0.11",
   "description": "",
   "main": "build/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon --watch build ./build/index.js --exec babel-node",
     "build": "nodemon --ext ts --watch ./src/ --ignore node_modules/ --ignore .git --ignore build/ --exec tsc"
   },
@@ -48,7 +47,7 @@
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "babel-preset-stage-3": "^6.24.1",
-    "influencers-models": "^1.1.0",
+    "influencers-models": "1.1.4",
     "inversify": "^4.14.0",
     "nodemon": "^1.18.4",
     "nyc": "^13.1.0",

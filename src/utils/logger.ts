@@ -1,6 +1,5 @@
 import * as winston from 'winston';
 import * as path from 'path';
-import 'dotenv/config';
 
 export default class Logger{
 

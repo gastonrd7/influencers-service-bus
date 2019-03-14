@@ -8,6 +8,8 @@ import requestPayload from '../constants/requestPayload'
 import requestResponse from '../constants/requestResponse'
 import Guid from '../../../utils/guid';
 import Logger from '../../../utils/logger';
+import SocialMediaRequestPayload from '../constants/socialMedia/socialMediaRequestPayload';
+import SocialMediaRequestResponse from '../constants/socialMedia/socialMediaRequestResponse';
 
 
 export default class MessagingService {
@@ -51,12 +53,12 @@ export default class MessagingService {
         Logger.log(`${caller} has been subcripted to ${subject} - OK! ****************************************`);
     }
 
-    public static async request(caller: string, subject: string, message: requestPayload):Promise<requestResponse>
+    public static async request(caller: string, subject: string, message: requestPayload | SocialMediaRequestPayload ):Promise<requestResponse | SocialMediaRequestResponse>
     {
         Logger.log(`Caller: ${caller} sent a request for the Subject: ${subject}. Payload: ${JSON.stringify(message)} ****************************************`);
         var start = new Date();
         
-        let response = await this.getInstance()._messagingClient.request(subject.toString(), Number.parseInt( process.env.MESSAGING_TIMEOUT), message);
+        let response = await this.getInstance()._messagingClient.request(subject.toString(), Number.parseInt("100000"), message);
         
         Logger.log(`Caller: ${caller} got the response for the Subject: ${subject} in ${new Date().valueOf() - start.valueOf()}ms ****************************************`);
         return response;
