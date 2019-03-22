@@ -1,5 +1,17 @@
 export class FacebookPost {
     constructor(){}
-    _id: String;
-    PropiedadPrueba: String;
+    comments: FacebookComment[];
+    shares: FacebookShares[];
+    likes: FacebookReactions[];
+    link: String
 }
+
+export class FacebookShares {
+    userName: String;
+}
+export class FacebookReactions {
+        userName: String;
+}
+export class FacebookComment {
+        userName:String;
+};
