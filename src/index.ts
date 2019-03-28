@@ -23,6 +23,8 @@ import {VerifyCredentialsResponseContent} from './services/serviceBus/constants/
 import { FacebookPost, FacebookComment, FacebookReactions, FacebookShares } from './services/serviceBus/constants/socialMedia/contentTypes/facebook/post';
 import { InstagramPost } from './services/serviceBus/constants/socialMedia/contentTypes/instagram/post';
 import { TwitterPost } from './services/serviceBus/constants/socialMedia/contentTypes/twitter/post';
+import { CreatePostResponseContent } from './services/serviceBus/constants/socialMedia/contentTypes/createPostResponseContent';
+import { CreatePostRequestContent } from './services/serviceBus/constants/socialMedia/contentTypes/createPOstRequestContent';
 
 export {
     MessagingService,
@@ -52,7 +54,9 @@ export {
     FacebookReactions,
     FacebookShares,
     InstagramPost,
-    TwitterPost
+    TwitterPost,
+    CreatePostResponseContent,
+    CreatePostRequestContent
 }
 
 
