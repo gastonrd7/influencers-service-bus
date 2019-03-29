@@ -16,6 +16,6 @@ export enum SocialMedia_Request {
     LOGIN = "LOGIN",
     LOGOUT = "LOGOUT",
     VERIFY_CREDENTIALS = "VERIFY_CREDENTIALS",
-    FREAD_POST = "READ_POST",
+    READ_POST = "READ_POST",
     CREATE_POST = "CREATE_POST"
 }
