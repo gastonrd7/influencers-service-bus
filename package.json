@@ -1,6 +1,6 @@
 {
   "name": "influencers-service-bus",
-  "version": "1.0.20",
+  "version": "1.0.21",
   "description": "",
   "main": "build/index.js",
   "scripts": {
@@ -48,7 +48,7 @@
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "babel-preset-stage-3": "^6.24.1",
-    "influencers-models": "^1.1.18",
+    "influencers-models": "^1.1.19",
     "inversify": "^4.14.0",
     "nodemon": "^1.18.4",
     "nyc": "^13.1.0",
