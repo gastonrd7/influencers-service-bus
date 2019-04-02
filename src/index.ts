@@ -20,7 +20,7 @@ import {ReadPostRequestContent} from './services/serviceBus/constants/socialMedi
 import {ReadPostResponseContent} from './services/serviceBus/constants/socialMedia/contentTypes/readPostResponseContent';
 import {VerifyCredentialsRequestContent} from './services/serviceBus/constants/socialMedia/contentTypes/verifyCredentialsRequestContent';
 import {VerifyCredentialsResponseContent} from './services/serviceBus/constants/socialMedia/contentTypes/verifyCredentialsResponseContent';
-import { FacebookPost, FacebookComment, FacebookReactions, FacebookShares } from './services/serviceBus/constants/socialMedia/contentTypes/facebook/post';
+import { FacebookPost, InsightType, Insight } from './services/serviceBus/constants/socialMedia/contentTypes/facebook/post';
 import { InstagramPost } from './services/serviceBus/constants/socialMedia/contentTypes/instagram/post';
 import { TwitterPost } from './services/serviceBus/constants/socialMedia/contentTypes/twitter/post';
 import { CreatePostResponseContent } from './services/serviceBus/constants/socialMedia/contentTypes/createPostResponseContent';
@@ -50,9 +50,8 @@ export {
     VerifyCredentialsRequestContent,
     VerifyCredentialsResponseContent,
     FacebookPost,
-    FacebookComment,
-    FacebookReactions,
-    FacebookShares,
+    Insight,
+    InsightType,
     InstagramPost,
     TwitterPost,
     CreatePostResponseContent,
