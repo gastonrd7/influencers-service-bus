@@ -27,7 +27,6 @@ import { CreatePostResponseContent } from './services/serviceBus/constants/socia
 import { CreatePostRequestContent } from './services/serviceBus/constants/socialMedia/contentTypes/createPostRequestContent';
 import { RelationshipPostRequestContent } from './services/serviceBus/constants/socialMedia/contentTypes/relationshipPostRequestContent';
 import { RelationshipPostResponseContent } from './services/serviceBus/constants/socialMedia/contentTypes/relationshipPostResponseContent';
-import { SocialMedia_Request, DataStorage_Request } from './services/serviceBus/constants/requestEnum';
 
 export {
     MessagingService,
@@ -61,8 +60,6 @@ export {
     CreatePostRequestContent,
     RelationshipPostRequestContent,
     RelationshipPostResponseContent,
-    SocialMedia_Request,
-    DataStorage_Request
 }
 
 
