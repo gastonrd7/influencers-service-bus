@@ -24,7 +24,9 @@ import { FacebookPost, InsightType, Insight } from './services/serviceBus/consta
 import { InstagramPost } from './services/serviceBus/constants/socialMedia/contentTypes/instagram/post';
 import { TwitterPost } from './services/serviceBus/constants/socialMedia/contentTypes/twitter/post';
 import { CreatePostResponseContent } from './services/serviceBus/constants/socialMedia/contentTypes/createPostResponseContent';
-import { CreatePostRequestContent } from './services/serviceBus/constants/socialMedia/contentTypes/createPOstRequestContent';
+import { CreatePostRequestContent } from './services/serviceBus/constants/socialMedia/contentTypes/createPostRequestContent';
+import { RelationshipPostRequestContent } from './services/serviceBus/constants/socialMedia/contentTypes/relationshipPostRequestContent';
+import { RelationshipPostResponseContent } from './services/serviceBus/constants/socialMedia/contentTypes/relationshipPostResponseContent';
 
 export {
     MessagingService,
@@ -55,7 +57,9 @@ export {
     InstagramPost,
     TwitterPost,
     CreatePostResponseContent,
-    CreatePostRequestContent
+    CreatePostRequestContent,
+    RelationshipPostRequestContent,
+    RelationshipPostResponseContent
 }
 
 
