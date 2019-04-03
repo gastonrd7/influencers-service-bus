@@ -5,6 +5,11 @@ import {ReadPostResponseContent} from "./contentTypes/readPostResponseContent";
 import { CreatePostResponseContent } from "./contentTypes/createPostResponseContent";
 
 export default class SocialMediaRequestResponse{
-    constructor(public payload: LogoutResponseContent | LoginResponseContent | VerifyCredentialsResponseContent | ReadPostResponseContent | CreatePostResponseContent,
+    constructor(public payload: LogoutResponseContent 
+        | LoginResponseContent 
+        | VerifyCredentialsResponseContent 
+        | ReadPostResponseContent 
+        | CreatePostResponseContent
+        | CreatePostResponseContent,
         public error?: any) {}
 }

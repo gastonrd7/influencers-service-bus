@@ -4,9 +4,16 @@ import {VerifyCredentialsRequestContent} from './contentTypes/verifyCredentialsR
 import {ReadPostRequestContent} from './contentTypes/readPostRequestContent';
 import { SocialMediaEnum } from './SocialMediaEnum';
 import { CreatePostRequestContent } from './contentTypes/createPostRequestContent';
+import { RelationshipPostRequestContent } from './contentTypes/relationshipPostRequestContent';
 
 
 export default class SocialMediaRequestPayload{
     constructor(public socialMedia: SocialMediaEnum, 
-        public payload?: LoginRequestContent | LogoutRequestContent | VerifyCredentialsRequestContent | ReadPostRequestContent | CreatePostRequestContent ){}
+        public payload?: LoginRequestContent 
+                | LogoutRequestContent 
+                | VerifyCredentialsRequestContent 
+                | ReadPostRequestContent 
+                | CreatePostRequestContent
+                | RelationshipPostRequestContent
+            ){}
 }
