@@ -18,6 +18,7 @@ export default class MessagingService {
 
     private static _instance : MessagingService = new MessagingService();
     @inject(SERVICE_IDENTIFIER.MESSENGER) private _messagingClient : IMessagingBus ;
+    private _requestTimeout : number;
 
     //#endregion Fields
 
@@ -31,8 +32,9 @@ export default class MessagingService {
         MessagingService._instance = this;
     }
 
-    public static async init():Promise<void>{
+    public static async init(requestTimeout: number = 100000):Promise<void>{
         this.getInstance()._messagingClient = container.getNamed<IMessagingBus>(SERVICE_IDENTIFIER.MESSENGER, TAG.NATS);
+        this.getInstance()._requestTimeout = requestTimeout;
         await this.getInstance()._messagingClient.init();
     }
 
@@ -58,7 +60,7 @@ export default class MessagingService {
         Logger.log(`Caller: ${caller} sent a request for the Subject: ${subject}. Payload: ${JSON.stringify(message)} ****************************************`);
         var start = new Date();
         
-        let response = await this.getInstance()._messagingClient.request(subject.toString(), Number.parseInt("100000"), message);
+        let response = await this.getInstance()._messagingClient.request(subject.toString(), this.getInstance()._requestTimeout, message);
         
         Logger.log(`Caller: ${caller} got the response for the Subject: ${subject} in ${new Date().valueOf() - start.valueOf()}ms ****************************************`);
         return response;
