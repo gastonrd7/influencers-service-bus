@@ -3,6 +3,7 @@ import {LoginResponseContent} from "./contentTypes/LoginResponseContent";
 import {VerifyCredentialsResponseContent} from "./contentTypes/verifyCredentialsResponseContent";
 import {ReadPostResponseContent} from "./contentTypes/readPostResponseContent";
 import { CreatePostResponseContent } from "./contentTypes/createPostResponseContent";
+import { RelationshipPostResponseContent } from "./contentTypes/relationshipPostResponseContent";
 
 export default class SocialMediaRequestResponse{
     constructor(public payload: LogoutResponseContent 
@@ -10,6 +11,6 @@ export default class SocialMediaRequestResponse{
         | VerifyCredentialsResponseContent 
         | ReadPostResponseContent 
         | CreatePostResponseContent
-        | CreatePostResponseContent,
+        | RelationshipPostResponseContent,
         public error?: any) {}
 }
