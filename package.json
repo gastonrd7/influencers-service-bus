@@ -1,6 +1,6 @@
 {
   "name": "influencers-service-bus",
-  "version": "1.0.34",
+  "version": "1.0.35",
   "description": "",
   "main": "build/index.js",
   "scripts": {
