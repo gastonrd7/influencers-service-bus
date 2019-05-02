@@ -1,3 +1,3 @@
 export class RelationshipPostResponseContent{
-    constructor(public platformObjectIdentities: String[]){}
+    constructor(public platformObjectIdentities: any[]){}
 }
