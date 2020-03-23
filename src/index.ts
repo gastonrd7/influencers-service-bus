@@ -27,6 +27,7 @@ import { CreatePostResponseContent } from './services/serviceBus/constants/socia
 import { CreatePostRequestContent } from './services/serviceBus/constants/socialMedia/contentTypes/createPostRequestContent';
 import { RelationshipPostRequestContent } from './services/serviceBus/constants/socialMedia/contentTypes/relationshipPostRequestContent';
 import { RelationshipPostResponseContent } from './services/serviceBus/constants/socialMedia/contentTypes/relationshipPostResponseContent';
+import { TraceItem } from './services/serviceBus/constants/TraceItem';
 
 export {
     MessagingService,
@@ -60,6 +61,7 @@ export {
     CreatePostRequestContent,
     RelationshipPostRequestContent,
     RelationshipPostResponseContent,
+    TraceItem
 }
 
 

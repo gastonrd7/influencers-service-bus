@@ -1,7 +1,11 @@
-import * as universalModels from 'influencers-models';
+import * as globalModels from 'influencers-models';
+import BasePayload from './baseRequest';
 
-export default class RequestPayload{
-    public init(model: universalModels.Model, select?: string[], where?, args?, id?, limit? : Number, page : Number = 0, computedField?: string, orderBy?: string[], asc = true ){
+export default class RequestPayload extends BasePayload{
+    constructor(){
+        super();
+    }
+    public init(model: globalModels.Model, select?: string[], where?, args?, id?, limit? : Number, page : Number = 0, computedField?: string, orderBy?: string[], asc = true ){
         this.model = model;
         this.select = select;
         this.where = where;
@@ -15,7 +19,7 @@ export default class RequestPayload{
 
     }
     
-    public model: universalModels.Model;
+    public model: globalModels.Model;
     public select : string[];
     public args;
     public where;
