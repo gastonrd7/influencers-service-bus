@@ -25,9 +25,11 @@ import { InstagramPost } from './services/serviceBus/constants/socialMedia/conte
 import { TwitterPost } from './services/serviceBus/constants/socialMedia/contentTypes/twitter/post';
 import { CreatePostResponseContent } from './services/serviceBus/constants/socialMedia/contentTypes/createPostResponseContent';
 import { CreatePostRequestContent } from './services/serviceBus/constants/socialMedia/contentTypes/createPostRequestContent';
-import { RelationshipPostRequestContent } from './services/serviceBus/constants/socialMedia/contentTypes/relationshipPostRequestContent';
-import { RelationshipPostResponseContent } from './services/serviceBus/constants/socialMedia/contentTypes/relationshipPostResponseContent';
+import { relationshipRequestContent } from './services/serviceBus/constants/socialMedia/contentTypes/relationshipRequestContent';
+import { RelationshipResponseContent } from './services/serviceBus/constants/socialMedia/contentTypes/RelationshipResponseContent';
+import { SocialMediaRelationship } from './services/serviceBus/constants/socialMedia/contentTypes/SocialMediaRelationship';
 import { TraceItem } from './services/serviceBus/constants/TraceItem';
+
 
 export {
     MessagingService,
@@ -59,8 +61,9 @@ export {
     TwitterPost,
     CreatePostResponseContent,
     CreatePostRequestContent,
-    RelationshipPostRequestContent,
-    RelationshipPostResponseContent,
+    relationshipRequestContent,
+    RelationshipResponseContent,
+    SocialMediaRelationship,
     TraceItem
 }
 

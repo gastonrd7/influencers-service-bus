@@ -4,7 +4,7 @@ import {VerifyCredentialsRequestContent} from './contentTypes/verifyCredentialsR
 import {ReadPostRequestContent} from './contentTypes/readPostRequestContent';
 import { SocialMediaEnum } from './SocialMediaEnum';
 import { CreatePostRequestContent } from './contentTypes/createPostRequestContent';
-import { RelationshipPostRequestContent } from './contentTypes/relationshipPostRequestContent';
+import { relationshipRequestContent } from './contentTypes/relationshipRequestContent';
 
 
 export default class SocialMediaRequestPayload{
@@ -14,6 +14,6 @@ export default class SocialMediaRequestPayload{
                 | VerifyCredentialsRequestContent 
                 | ReadPostRequestContent 
                 | CreatePostRequestContent
-                | RelationshipPostRequestContent
+                | relationshipRequestContent
             ){}
 }
