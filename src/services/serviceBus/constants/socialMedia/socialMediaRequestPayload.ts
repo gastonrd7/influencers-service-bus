@@ -1,19 +1,19 @@
 import {LoginRequestContent} from './contentTypes/LoginRequestContent';
 import {LogoutRequestContent} from './contentTypes/logoutRequestContent';
 import {VerifyCredentialsRequestContent} from './contentTypes/verifyCredentialsRequestContent';
-import {ReadPostRequestContent} from './contentTypes/readPostRequestContent';
-import { SocialMediaEnum } from './SocialMediaEnum';
-import { CreatePostRequestContent } from './contentTypes/createPostRequestContent';
-import { RelationshipPostRequestContent } from './contentTypes/relationshipPostRequestContent';
+import {ReadPostInsightsRequestContent} from './contentTypes/ReadPostInsightsRequestContent';
+import { CreatePostRequestContent } from './contentTypes/CreatePostRequestContent';
+import { RelationshipRequestContent } from './contentTypes/RelationshipRequestContent';
+import { platformEnum } from 'influencers-models';
 
 
 export default class SocialMediaRequestPayload{
-    constructor(public socialMedia: SocialMediaEnum, 
+    constructor(public socialMedia: platformEnum, 
         public payload?: LoginRequestContent 
                 | LogoutRequestContent 
                 | VerifyCredentialsRequestContent 
-                | ReadPostRequestContent 
+                | ReadPostInsightsRequestContent 
                 | CreatePostRequestContent
-                | RelationshipPostRequestContent
+                | RelationshipRequestContent
             ){}
 }
