@@ -9,23 +9,20 @@ import MESSAGING_TAG from './services/serviceBus/constants/tags';
 import formatRequest from './services/serviceBus/constants/formatRequest';
 import { Source } from './services/serviceBus/constants/sourcesEnum';
 import * as RequestEnum from './services/serviceBus/constants/requestEnum';
-import { SocialMediaEnum } from './services/serviceBus/constants/socialMedia/SocialMediaEnum';
 import SocialMediaRequestPayload from './services/serviceBus/constants/socialMedia/socialMediaRequestPayload';
 import SocialMediaRequestResponse from './services/serviceBus/constants/socialMedia/socialMediaRequestResponse';
 import {LoginRequestContent} from './services/serviceBus/constants/socialMedia/contentTypes/LoginRequestContent';
 import {LoginResponseContent} from './services/serviceBus/constants/socialMedia/contentTypes/LoginResponseContent';
 import {LogoutRequestContent} from './services/serviceBus/constants/socialMedia/contentTypes/logoutRequestContent';
 import {LogoutResponseContent} from './services/serviceBus/constants/socialMedia/contentTypes/logoutResponseContent';
-import {ReadPostRequestContent} from './services/serviceBus/constants/socialMedia/contentTypes/readPostRequestContent';
-import {ReadPostResponseContent} from './services/serviceBus/constants/socialMedia/contentTypes/readPostResponseContent';
+import {ReadPostInsightsRequestContent} from './services/serviceBus/constants/socialMedia/contentTypes/ReadPostInsightsRequestContent';
+import {ReadPostInsightsResponseContent} from './services/serviceBus/constants/socialMedia/contentTypes/ReadPostInsightsResponseContent';
 import {VerifyCredentialsRequestContent} from './services/serviceBus/constants/socialMedia/contentTypes/verifyCredentialsRequestContent';
 import {VerifyCredentialsResponseContent} from './services/serviceBus/constants/socialMedia/contentTypes/verifyCredentialsResponseContent';
-import { FacebookPost, InsightType, Insight } from './services/serviceBus/constants/socialMedia/contentTypes/facebook/post';
-import { InstagramPost } from './services/serviceBus/constants/socialMedia/contentTypes/instagram/post';
-import { TwitterPost } from './services/serviceBus/constants/socialMedia/contentTypes/twitter/post';
-import { CreatePostResponseContent } from './services/serviceBus/constants/socialMedia/contentTypes/createPostResponseContent';
-import { CreatePostRequestContent } from './services/serviceBus/constants/socialMedia/contentTypes/createPostRequestContent';
-import { relationshipRequestContent } from './services/serviceBus/constants/socialMedia/contentTypes/relationshipRequestContent';
+import { ExternalPost, Insight } from './services/serviceBus/constants/socialMedia/contentTypes/ExternalPost';
+import { CreatePostResponseContent } from './services/serviceBus/constants/socialMedia/contentTypes/CreatePostResponseContent';
+import { CreatePostRequestContent } from './services/serviceBus/constants/socialMedia/contentTypes/CreatePostRequestContent';
+import { RelationshipRequestContent } from './services/serviceBus/constants/socialMedia/contentTypes/RelationshipRequestContent';
 import { RelationshipResponseContent } from './services/serviceBus/constants/socialMedia/contentTypes/RelationshipResponseContent';
 import { SocialMediaRelationship } from './services/serviceBus/constants/socialMedia/contentTypes/SocialMediaRelationship';
 import { TraceItem } from './services/serviceBus/constants/TraceItem';
@@ -43,25 +40,21 @@ export {
     RequestEnum,
     formatRequest,
     Source,
-    SocialMediaEnum,
     SocialMediaRequestPayload,
     SocialMediaRequestResponse,
     LoginRequestContent,
     LoginResponseContent,
     LogoutRequestContent,
     LogoutResponseContent,
-    ReadPostRequestContent,
-    ReadPostResponseContent,
+    ReadPostInsightsRequestContent,
+    ReadPostInsightsResponseContent,
     VerifyCredentialsRequestContent,
     VerifyCredentialsResponseContent,
-    FacebookPost,
+    ExternalPost,
     Insight,
-    InsightType,
-    InstagramPost,
-    TwitterPost,
     CreatePostResponseContent,
     CreatePostRequestContent,
-    relationshipRequestContent,
+    RelationshipRequestContent,
     RelationshipResponseContent,
     SocialMediaRelationship,
     TraceItem
