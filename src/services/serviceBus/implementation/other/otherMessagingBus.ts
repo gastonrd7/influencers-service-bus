@@ -1,9 +1,9 @@
-import ImessagingBus from '../../interfaces/IMessagingBus'
+import IMessageBus from '../../interfaces/IMessagingBus'
 import * as subCallback from '../../specialTypes/functionsTypes'
-import { inject, injectable, named } from "inversify";
+import { injectable} from "inversify";
 
 @injectable()
-export default class OtherMessagingBus implements ImessagingBus {
+export default class OtherMessagingBus implements IMessageBus {
     
 
     constructor() {
