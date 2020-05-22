@@ -6,7 +6,8 @@
   "scripts": {
     "start": "nodemon --watch build ./build/index.js --exec babel-node",
     "test": "nodemon --watch build ./build/test/index.js --exec babel-node",
-    "build": "nodemon --ext ts --declaration --watch ./src/ --ignore node_modules/ --ignore .git --ignore build/ --exec tsc"
+    "build": "nodemon --ext ts --declaration --watch ./src/ --ignore node_modules/ --ignore .git --ignore build/ --exec tsc",
+    "build-from-docker": "tsc"
   },
   "nyc": {
     "include": [
