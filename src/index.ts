@@ -4,7 +4,7 @@ import RequestPayload from './services/serviceBus/constants/requestPayload';
 import RequestResponse from './services/serviceBus/constants/requestResponse';
 import IMessagingBus from './services/serviceBus/interfaces/IMessagingBus';
 import { RequestWhere, RequestWhereType } from './services/serviceBus/constants/requestWhere';
-import { OtherMessagingBus } from './services/serviceBus/implementation/other/OtherMessagingBus';
+// import { OtherMessagingBus } from './services/serviceBus/implementation/other/OtherMessagingBus';
 import MESSAGING_TAG from './services/serviceBus/constants/tags';
 import formatRequest from './services/serviceBus/constants/formatRequest';
 import { Source } from './services/serviceBus/constants/sourcesEnum';
@@ -35,7 +35,7 @@ export {
     RequestWhere,
     RequestWhereType,
     IMessagingBus,
-    OtherMessagingBus,
+    // OtherMessagingBus,
     MESSAGING_TAG,
     RequestEnum,
     formatRequest,
