@@ -1,8 +1,8 @@
 import "reflect-metadata";
 import { Container } from "inversify";
 import IMessagingBus from "../serviceBus/interfaces/IMessagingBus";
-import NatsMessagingBus from '../serviceBus/implementation/nats/NatsMessagingBus'
-import OtherMessagingBus from '../serviceBus/implementation/other/OtherMessagingBus'
+import NatsMessagingBus from '../serviceBus/implementation/nats/NatsMessagingBus';
+import { OtherMessagingBus } from '../serviceBus/implementation/other/OtherMessagingBus';
 import SERVICE_IDENTIFIER from "./identifiers";
 import MESSAGING_TAG from "../serviceBus/constants/tags";
 

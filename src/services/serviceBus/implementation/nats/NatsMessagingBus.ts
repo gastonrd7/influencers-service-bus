@@ -11,7 +11,7 @@ import SocialMediaRequestResponse from '../../constants/socialMedia/socialMediaR
 
 
 @injectable()
-export default class NatsMessaginBus implements ImessagingBus {
+export default class NatsMessagingBus implements ImessagingBus {
     
 
     //#region Fields
