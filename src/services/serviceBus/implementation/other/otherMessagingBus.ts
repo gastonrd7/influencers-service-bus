@@ -3,7 +3,7 @@ import * as subCallback from '../../specialTypes/functionsTypes'
 import { inject, injectable, named } from "inversify";
 
 @injectable()
-export default class OtherMessaginBus implements ImessagingBus {
+export default class OtherMessagingBus implements ImessagingBus {
     
 
     constructor() {
