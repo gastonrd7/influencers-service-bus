@@ -40,6 +40,11 @@ export default class NatsMessagingBus implements ImessagingBus {
         this._natsClient.on('close', () => {
             Logger.log(`Stopped`);
         });
+        this._natsClient.on('error', (e) => {
+            const msg = 'Error connecting to NATS';
+            console.log(msg, e);
+            Logger.error(msg, e);
+        });
     }
 
     public name:string;
