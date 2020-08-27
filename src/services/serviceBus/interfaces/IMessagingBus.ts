@@ -1,8 +1,7 @@
 import * as subCallback from '../specialTypes/functionsTypes'
 import requestPayload from '../constants/requestPayload'
 import requestResponse from '../constants/requestResponse'
-import SocialMediaRequestResponse from '../constants/socialMedia/socialMediaRequestResponse';
-import SocialMediaRequestPayload from '../constants/socialMedia/socialMediaRequestPayload';
+import { SocialMediaRequestPayload, SocialMediaRequestResponse } from 'adme-common';
 
 export default interface IMessageBus {
     publish(subject: string, message):Promise<void>;

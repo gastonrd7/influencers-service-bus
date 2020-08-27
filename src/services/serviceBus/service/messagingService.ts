@@ -6,10 +6,8 @@ import container from "../../config/ioc_config";
 import * as subsCaller from '../specialTypes/functionsTypes'
 import requestPayload from '../constants/requestPayload'
 import requestResponse from '../constants/requestResponse'
-import Guid from '../../../utils/guid';
-import Logger from '../../../utils/logger';
-import SocialMediaRequestPayload from '../constants/socialMedia/socialMediaRequestPayload';
-import SocialMediaRequestResponse from '../constants/socialMedia/socialMediaRequestResponse';
+import { Logger } from 'adme-common';
+import { SocialMediaRequestPayload, SocialMediaRequestResponse } from 'adme-common';
 
 
 export default class MessagingService {
@@ -39,10 +37,10 @@ export default class MessagingService {
     }
 
     
-    public static async publish(subject: string, message):Promise<void>
+    public static async publish(caller: string, subject: string, message):Promise<void>
     {
         await this.getInstance()._messagingClient.publish(subject, message);
-        Logger.log(`${subject} - PUBLISH-SENT ****************************************`);
+        Logger.log(`${caller} has published: ${subject} ****************************************`);
         
     }
 

@@ -5,9 +5,8 @@ import { inject, injectable, named } from "inversify";
 import requestPayload from '../../constants/requestPayload'
 import requestResponse from '../../constants/requestResponse'
 import Guid from '../../../../utils/guid';
-import Logger from '../../../../utils/logger';
-import SocialMediaRequestPayload from '../../constants/socialMedia/socialMediaRequestPayload';
-import SocialMediaRequestResponse from '../../constants/socialMedia/socialMediaRequestResponse';
+import { Logger } from 'adme-common';
+import { SocialMediaRequestPayload, SocialMediaRequestResponse } from 'adme-common';
 
 
 @injectable()
