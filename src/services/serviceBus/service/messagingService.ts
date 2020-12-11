@@ -6,7 +6,7 @@ import container from "../../config/ioc_config";
 import * as subsCaller from '../specialTypes/functionsTypes'
 import requestPayload from '../constants/requestPayload'
 import requestResponse from '../constants/requestResponse'
-import { Logger } from 'adme-common';
+import { asyncForEach, Logger } from 'adme-common';
 import { SocialMediaRequestPayload, SocialMediaRequestResponse } from 'adme-common';
 
 
@@ -15,7 +15,7 @@ export default class MessagingService {
     //#region Fields
 
     private static _instance : MessagingService = new MessagingService();
-    @inject(SERVICE_IDENTIFIER.MESSENGER) private _messagingClients : { [key: string]: IMessagingBus; } ;
+    @inject(SERVICE_IDENTIFIER.MESSENGER) private _messagingClients : { [key: string]: IMessagingBus; } = {};
     private _requestTimeout : number;
 
     //#endregion Fields
@@ -32,10 +32,17 @@ export default class MessagingService {
 
     // public static async init(requestTimeout: number = 100000):Promise<void>{
     public static async init(messengersAttributes: {chanelName: string, parameters: any}[]):Promise<void>{
-        messengersAttributes.forEach(async messenger => {
-            this.getInstance()._messagingClients[messenger.chanelName] = container.getNamed<IMessagingBus>(SERVICE_IDENTIFIER.MESSENGER, TAG.NATS);
-            await this.getInstance()._messagingClients[messenger.chanelName].init(messenger.parameters);
+        await asyncForEach(messengersAttributes, async messenger => {
+            try{
+                this.getInstance()._messagingClients[messenger.chanelName] = container.getNamed<IMessagingBus>(SERVICE_IDENTIFIER.MESSENGER, TAG.NATS);
+                await this.getInstance()._messagingClients[messenger.chanelName].init(messenger.parameters);
+            }
+            catch(e){
+                return Promise.reject(e);
+            }
+            
         });
+        return Promise.resolve();
     }
 
     

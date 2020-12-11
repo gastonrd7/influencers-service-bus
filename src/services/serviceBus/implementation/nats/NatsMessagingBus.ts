@@ -5,7 +5,7 @@ import { inject, injectable, named } from "inversify";
 import requestPayload from '../../constants/requestPayload'
 import requestResponse from '../../constants/requestResponse'
 import Guid from '../../../../utils/guid';
-import { Logger } from 'adme-common';
+import { asyncForEach, Logger } from 'adme-common';
 import { SocialMediaRequestPayload, SocialMediaRequestResponse } from 'adme-common';
 
 enum NatsParamatersEnum {
@@ -40,14 +40,15 @@ export default class NatsMessagingBus implements ImessagingBus {
 
     public async init(parameters: any):Promise<void>{
 
-        Object.keys(NatsParamatersEnum).forEach(param => {
+        await asyncForEach(Object.keys(NatsParamatersEnum), async (param, index) =>{
             if (!parameters[NatsParamatersEnum[param]]){
                 const msg = `NatsMessagingBus can not be initialized because the ${param} was not provided`;
                 console.log(msg);
                 Logger.error(msg);
-                throw (msg);
+                return Promise.reject(msg);
             }
         });
+
         var start = new Date();
         this._timeout = Number.parseInt(parameters[NatsParamatersEnum.TIMEOUT]);
         this._natsClient = await connect({'url':`${parameters[NatsParamatersEnum.URL]}:${parameters[NatsParamatersEnum.PORT]}`, 'user':parameters[NatsParamatersEnum.USER], 'pass':parameters[NatsParamatersEnum.PASSWORD]});
