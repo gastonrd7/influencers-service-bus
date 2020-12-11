@@ -8,7 +8,13 @@ import Guid from '../../../../utils/guid';
 import { Logger } from 'adme-common';
 import { SocialMediaRequestPayload, SocialMediaRequestResponse } from 'adme-common';
 
-
+enum NatsParamatersEnum {
+    TIMEOUT = "NATS_TIMEOUT",
+    URL = "NATS_URL",
+    PORT = "NATS_PORT",
+    USER = "NATS_USER",
+    PASSWORD = "NATS_PASSWORD"
+}
 @injectable()
 export default class NatsMessagingBus implements ImessagingBus {
     
@@ -16,6 +22,9 @@ export default class NatsMessagingBus implements ImessagingBus {
     //#region Fields
     
     private _natsClient:Client;
+    private _timeout: number;
+
+    
 
     //#endregion Fields
     
@@ -29,12 +38,21 @@ export default class NatsMessagingBus implements ImessagingBus {
 
     //#region ImessagingBus implementation
 
-    public async init():Promise<void>{
+    public async init(parameters: any):Promise<void>{
 
+        Object.keys(NatsParamatersEnum).forEach(param => {
+            if (!parameters[NatsParamatersEnum[param]]){
+                const msg = `NatsMessagingBus can not be initialized because the ${param} was not provided`;
+                console.log(msg);
+                Logger.error(msg);
+                throw (msg);
+            }
+        });
         var start = new Date();
-        this._natsClient = await connect({'url':`${process.env.NATS_URL}:${process.env.NATS_PORT}`, 'user':process.env.NATS_USER, 'pass':process.env.NATS_PASSWORD});
+        this._timeout = Number.parseInt(parameters[NatsParamatersEnum.TIMEOUT]);
+        this._natsClient = await connect({'url':`${parameters[NatsParamatersEnum.URL]}:${parameters[NatsParamatersEnum.PORT]}`, 'user':parameters[NatsParamatersEnum.USER], 'pass':parameters[NatsParamatersEnum.PASSWORD]});
         this._natsClient.on('connect', () => {
-            Logger.log(`Listener connected to Nats - Duration: ${new Date().valueOf() - start.valueOf()}ms`);
+            Logger.log(`Listener connected to Nats - Duration: ${new Date().valueOf() - start.valueOf()} ms`);
         });
         this._natsClient.on('close', () => {
             Logger.log(`Stopped`);
@@ -53,18 +71,18 @@ export default class NatsMessagingBus implements ImessagingBus {
         await this._natsClient.publish(subject, JSON.stringify( message));
     }
 
-    public async request(subject: string, timeout: number, message: requestPayload | SocialMediaRequestPayload):Promise<requestResponse | SocialMediaRequestResponse>
+    public async request(subject: string, message: requestPayload | SocialMediaRequestPayload):Promise<requestResponse | SocialMediaRequestResponse>
     {
-        let responseMsg = await this._natsClient.request(subject, timeout, JSON.stringify( message ));
+        let responseMsg = await this._natsClient.request(subject, this._timeout, JSON.stringify( message ));
 
         let response = Object.create(requestResponse.prototype);
         return await Object.assign(response, JSON.parse(responseMsg.data));
         
     }
 
-    public async subscribe(subject: string, callback: subCallback.subcribeCallback):Promise<any>
+    public async subscribe(subject: string, callback: subCallback.subcribeCallback, group: string ):Promise<any>
     {
-        await this._natsClient.subscribe(subject, callback);
+        await this._natsClient.subscribe(subject, callback, { queue: group });
     }
 
     public async unsubscribe(subscriptionId: number): Promise<any> {

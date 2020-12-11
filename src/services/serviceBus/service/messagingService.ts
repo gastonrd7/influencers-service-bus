@@ -15,7 +15,7 @@ export default class MessagingService {
     //#region Fields
 
     private static _instance : MessagingService = new MessagingService();
-    @inject(SERVICE_IDENTIFIER.MESSENGER) private _messagingClient : IMessagingBus ;
+    @inject(SERVICE_IDENTIFIER.MESSENGER) private _messagingClients : { [key: string]: IMessagingBus; } ;
     private _requestTimeout : number;
 
     //#endregion Fields
@@ -30,35 +30,37 @@ export default class MessagingService {
         MessagingService._instance = this;
     }
 
-    public static async init(requestTimeout: number = 100000):Promise<void>{
-        this.getInstance()._messagingClient = container.getNamed<IMessagingBus>(SERVICE_IDENTIFIER.MESSENGER, TAG.NATS);
-        this.getInstance()._requestTimeout = requestTimeout;
-        await this.getInstance()._messagingClient.init();
+    // public static async init(requestTimeout: number = 100000):Promise<void>{
+    public static async init(messengersAttributes: {chanelName: string, parameters: any}[]):Promise<void>{
+        messengersAttributes.forEach(async messenger => {
+            this.getInstance()._messagingClients[messenger.chanelName] = container.getNamed<IMessagingBus>(SERVICE_IDENTIFIER.MESSENGER, TAG.NATS);
+            await this.getInstance()._messagingClients[messenger.chanelName].init(messenger.parameters);
+        });
     }
 
     
-    public static async publish(caller: string, subject: string, message):Promise<void>
+    public static async publish(chanelName: string, caller: string, subject: string, message):Promise<void>
     {
-        await this.getInstance()._messagingClient.publish(subject, message);
-        Logger.log(`${caller} has published: ${subject} ****************************************`);
+        await this.getInstance()._messagingClients[chanelName].publish(subject, message);
+        Logger.log(`${caller} has published: ${subject} to the chanel ${chanelName} ****************************************`);
         
     }
 
-    public static async subscribe(caller: string, subject: string, callback: subsCaller.subcribeCallback):Promise<void>
+    public static async subscribe(chanelName: string, caller: string, subject: string, callback: subsCaller.subcribeCallback):Promise<void>
     {
-        await this.getInstance()._messagingClient.subscribe(subject, async (err, msg) => {
+        await this.getInstance()._messagingClients[chanelName].subscribe(subject, async (err, msg) => {
             await callback(err, msg);
     
-        });
-        Logger.log(`${caller} has been subcripted to ${subject} - OK! ****************************************`);
+        }, caller);
+        Logger.log(`${caller} has been subcripted to ${subject} of the chanel ${chanelName} - OK! ****************************************`);
     }
 
-    public static async request(caller: string, subject: string, message: requestPayload | SocialMediaRequestPayload ):Promise<requestResponse | SocialMediaRequestResponse>
+    public static async request(chanelName: string, caller: string, subject: string, message: requestPayload | SocialMediaRequestPayload ):Promise<requestResponse | SocialMediaRequestResponse>
     {
         Logger.log(`Caller: ${caller} sent a request for the Subject: ${subject}. Payload: ${JSON.stringify(message)} ****************************************`);
         var start = new Date();
         
-        let response = await this.getInstance()._messagingClient.request(subject.toString(), this.getInstance()._requestTimeout, message);
+        let response = await this.getInstance()._messagingClients[chanelName].request(subject.toString(), message);
         
         Logger.log(`Caller: ${caller} got the response for the Subject: ${subject} in ${new Date().valueOf() - start.valueOf()}ms ****************************************`);
         return response;
@@ -72,13 +74,6 @@ export default class MessagingService {
     private static getInstance() : MessagingService
     {
         return MessagingService._instance;
-    }
-
-    private static async getNewMessagingBudClient() : Promise<IMessagingBus>
-    {
-        var client = await container.getNamed<IMessagingBus>(SERVICE_IDENTIFIER.MESSENGER, TAG.NATS);
-        await client.init();
-        return Promise.resolve( client );
     }
 
     //#endregion Private

@@ -28,6 +28,7 @@ import { Event as eventsEnum } from "./services/serviceBus/constants/format/even
 import { formatEvent, formatSubcriptionEvent } from "./services/serviceBus/constants/format/formatEvents";
 import formatRequest from "./services/serviceBus/constants/format/formatRequest";
 import { Source } from "./services/serviceBus/constants/format/sourcesEnum";
+import InitializationConfig from './services/serviceBus/constants/InitializationConfig';
 
 
 export {
@@ -42,6 +43,7 @@ export {
     RequestEnum,
     formatRequest,
     Source,
+    InitializationConfig,
     // SocialMediaRequestPayload,
     // SocialMediaRequestResponse,
     // LoginRequestContent,

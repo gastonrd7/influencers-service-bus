@@ -13,7 +13,7 @@ export class OtherMessagingBus implements IMessageBus {
 
     public name:string;
 
-    public async init():Promise<void>{
+    public async init(parameters: any):Promise<void>{
         throw new Error('Method not implemented!');
     }
 
@@ -22,7 +22,7 @@ export class OtherMessagingBus implements IMessageBus {
        
     }
 
-    public async request(subject: string, timeout: number, message):Promise<any>
+    public async request(subject: string, message):Promise<any>
     {
         throw new Error('Method not implemented!');
     }
