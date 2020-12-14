@@ -42,6 +42,7 @@ export default class MessagingService {
             }
             
         });
+        console.log(await this.getInstance()._messagingClients);
         return Promise.resolve();
     }
 
@@ -49,7 +50,7 @@ export default class MessagingService {
     public static async publish(chanelName: string, caller: string, subject: string, message):Promise<void>
     {
         await this.getInstance()._messagingClients[chanelName].publish(subject, message);
-        Logger.log(`${caller} has published: ${subject} to the chanel ${chanelName} ****************************************`);
+        Logger.log(`${caller} has published: ${subject} to '${chanelName}' chanel  ****************************************`);
         
     }
 
@@ -59,17 +60,17 @@ export default class MessagingService {
             await callback(err, msg);
     
         }, caller);
-        Logger.log(`${caller} has been subcripted to ${subject} of the chanel ${chanelName} - OK! ****************************************`);
+        Logger.log(`${caller} has been subcripted to ${subject} of '${chanelName}' chanel - OK! ****************************************`);
     }
 
     public static async request(chanelName: string, caller: string, subject: string, message: requestPayload | SocialMediaRequestPayload ):Promise<requestResponse | SocialMediaRequestResponse>
     {
-        Logger.log(`Caller: ${caller} sent a request for the Subject: ${subject}. Payload: ${JSON.stringify(message)} ****************************************`);
+        Logger.log(`Caller: ${caller} sent a request for the Subject: ${subject} of the '${chanelName} channel. Payload: ${JSON.stringify(message)} ****************************************`);
         var start = new Date();
         
         let response = await this.getInstance()._messagingClients[chanelName].request(subject.toString(), message);
         
-        Logger.log(`Caller: ${caller} got the response for the Subject: ${subject} in ${new Date().valueOf() - start.valueOf()}ms ****************************************`);
+        Logger.log(`Caller: ${caller} got the response for the Subject: ${subject} of the '${chanelName} channel, in ${new Date().valueOf() - start.valueOf()}ms ****************************************`);
         return response;
     }
 

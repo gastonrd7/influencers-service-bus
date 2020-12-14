@@ -5,7 +5,7 @@ import { inject, injectable, named } from "inversify";
 import requestPayload from '../../constants/requestPayload'
 import requestResponse from '../../constants/requestResponse'
 import Guid from '../../../../utils/guid';
-import { asyncForEach, Logger } from 'adme-common';
+import { asyncForEach, Logger, sleep } from 'adme-common';
 import { SocialMediaRequestPayload, SocialMediaRequestResponse } from 'adme-common';
 
 enum NatsParamatersEnum {
@@ -49,6 +49,7 @@ export default class NatsMessagingBus implements ImessagingBus {
             }
         });
 
+        
         var start = new Date();
         this._timeout = Number.parseInt(parameters[NatsParamatersEnum.TIMEOUT]);
         this._natsClient = await connect({'url':`${parameters[NatsParamatersEnum.URL]}:${parameters[NatsParamatersEnum.PORT]}`, 'user':parameters[NatsParamatersEnum.USER], 'pass':parameters[NatsParamatersEnum.PASSWORD]});
@@ -63,6 +64,8 @@ export default class NatsMessagingBus implements ImessagingBus {
             console.log(msg, e);
             Logger.error(msg, e);
         });
+        await sleep(1000);
+        return Promise.resolve();
     }
 
     public name:string;
@@ -83,7 +86,7 @@ export default class NatsMessagingBus implements ImessagingBus {
 
     public async subscribe(subject: string, callback: subCallback.subcribeCallback, group: string ):Promise<any>
     {
-        await this._natsClient.subscribe(subject, callback, { queue: group });
+        await this._natsClient.subscribe(subject, callback, {queue: group.replace(/\s/g, '_').toUpperCase()});
     }
 
     public async unsubscribe(subscriptionId: number): Promise<any> {
