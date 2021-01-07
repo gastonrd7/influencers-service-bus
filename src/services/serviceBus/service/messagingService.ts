@@ -42,7 +42,6 @@ export default class MessagingService {
             }
             
         });
-        console.log(await this.getInstance()._messagingClients);
         return Promise.resolve();
     }
 
