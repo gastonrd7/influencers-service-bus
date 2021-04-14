@@ -23,7 +23,8 @@
         "types": ["reflect-metadata"],
         "moduleResolution": "node",
         "experimentalDecorators": true,
-        "emitDecoratorMetadata": true
+        "emitDecoratorMetadata": true,
+        "esModuleInterop": true
     },
     "include":[
         "./**/*"

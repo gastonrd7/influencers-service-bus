@@ -8,6 +8,7 @@ import requestPayload from '../constants/requestPayload'
 import requestResponse from '../constants/requestResponse'
 import { Logger } from 'adme-common';
 import { SocialMediaRequestPayload, SocialMediaRequestResponse } from 'adme-common';
+import { CachingService } from '../../..';
 
 
 export default class MessagingService {
@@ -39,6 +40,7 @@ export default class MessagingService {
     
     public static async publish(caller: string, subject: string, message):Promise<void>
     {
+        await CachingService.incrementBy('PublishCounter');
         await this.getInstance()._messagingClient.publish(subject, message);
         Logger.log(`${caller} has published: ${subject} ****************************************`);
         
@@ -46,6 +48,7 @@ export default class MessagingService {
 
     public static async subscribe(caller: string, subject: string, callback: subsCaller.subcribeCallback):Promise<void>
     {
+        await CachingService.incrementBy('SubscribeCounter');
         await this.getInstance()._messagingClient.subscribe(subject, async (err, msg) => {
             await callback(err, msg);
     
@@ -55,6 +58,7 @@ export default class MessagingService {
 
     public static async request(caller: string, subject: string, message: requestPayload | SocialMediaRequestPayload ):Promise<requestResponse | SocialMediaRequestResponse>
     {
+        await CachingService.incrementBy('RequestCounter');
         Logger.log(`Caller: ${caller} sent a request for the Subject: ${subject}. Payload: ${JSON.stringify(message)} ****************************************`);
         var start = new Date();
         

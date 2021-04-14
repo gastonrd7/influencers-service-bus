@@ -28,9 +28,11 @@ import { Event as eventsEnum } from "./services/serviceBus/constants/format/even
 import { formatEvent, formatSubcriptionEvent } from "./services/serviceBus/constants/format/formatEvents";
 import formatRequest from "./services/serviceBus/constants/format/formatRequest";
 import { Source } from "./services/serviceBus/constants/format/sourcesEnum";
+import CachingService from './services/caching/service/CachingService';
 
 
 export {
+    CachingService,
     MessagingService,
     RequestPayload,
     RequestResponse,
