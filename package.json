@@ -41,7 +41,10 @@
   },
   "homepage": "https://github.com/gastonrd7/service-bus#readme",
   "dependencies": {
-    "typescript": "^3.8.3"
+    "@types/async-redis": "^1.1.1",
+    "async-redis": "^1.1.7",
+    "typescript": "^3.8.3",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@types/node": "^10.12.12",

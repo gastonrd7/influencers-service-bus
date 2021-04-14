@@ -1,0 +1,1 @@
+export type subcribeCallback = (err, msg) => void;
