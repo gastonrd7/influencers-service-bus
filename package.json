@@ -43,6 +43,7 @@
   "dependencies": {
     "@types/async-redis": "^1.1.1",
     "async-redis": "^1.1.7",
+    "redis-clustr": "^1.7.0",
     "typescript": "^3.8.3",
     "uuid": "^8.3.2"
   },

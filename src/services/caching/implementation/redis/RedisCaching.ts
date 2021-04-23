@@ -3,6 +3,7 @@ import { Logger } from 'adme-common';
 import ICaching from '../../interfaces/ICaching';
 import asyncRedis from "async-redis";
 import { RedisClient } from "redis";
+import RedisClustr from 'redis-clustr';
 
 
 
@@ -33,30 +34,50 @@ export default class RedisCaching implements ICaching {
 
         var start = new Date();
         try{
-            this._cachingClient = asyncRedis.createClient(
-                port,
-                host,
-                {
-                    retry_strategy: function (options) {
-                        if (options.error && options.error.code === "ECONNREFUSED") {
-                            // End reconnecting on a specific error and flush all commands with
-                            // a individual error
-                            return new Error("The server refused the connection");
-                        }
-                        if (options.total_retry_time > 1000 * 60 * 60) {
-                            // End reconnecting after a specific timeout and flush all commands
-                            // with a individual error
-                            return new Error("Retry time exhausted");
-                        }
-                        if (options.attempt > 10) {
-                            // End reconnecting with built in error
-                            return undefined;
-                        }
-                        // reconnect after
-                        return Math.min(options.attempt * 100, 3000);
-                    },
+            // this._cachingClient = asyncRedis.createClient(
+            //     port,
+            //     host,
+            //     {
+            //         retry_strategy: function (options) {
+            //             if (options.error && options.error.code === "ECONNREFUSED") {
+            //                 // End reconnecting on a specific error and flush all commands with
+            //                 // a individual error
+            //                 return new Error("The server refused the connection");
+            //             }
+            //             if (options.total_retry_time > 1000 * 60 * 60) {
+            //                 // End reconnecting after a specific timeout and flush all commands
+            //                 // with a individual error
+            //                 return new Error("Retry time exhausted");
+            //             }
+            //             if (options.attempt > 10) {
+            //                 // End reconnecting with built in error
+            //                 return undefined;
+            //             }
+            //             // reconnect after
+            //             return Math.min(options.attempt * 100, 3000);
+            //         },
+            //     }
+            // );
+
+            this._cachingClient = new RedisClustr({
+                servers: [{
+                    host,
+                    port
+                  }],
+                slotInterval: 1000, // default: none. Interval to repeatedly re-fetch cluster slot configuration
+                maxQueueLength: 100, // default: no limit. Maximum length of the getSlots queue (basically number of commands that can be queued whilst connecting to the cluster)
+                queueShift: false, // default: true. Whether to shift the getSlots callback queue when it's at max length (error oldest callback), or to error on the new callback
+                wait: 5000, // default: no timeout. Max time to wait to connect to cluster before sending an error to all getSlots callbacks
+                slaves: 'share', // default: 'never'. How to direct readOnly commands: 'never' to use masters only, 'share' to distribute between masters and slaves or 'always' to  only use slaves (if available)
+                createClient: function(port, host, options) {
+                  return require('redis').createClient(port, host, options);
+                }, // default: redis.createClient. Function used to connect to redis, called with arguments above
+                redisOptions: {
+                  // options passed to the node_redis client https://github.com/NodeRedis/node_redis#options-is-an-object-with-the-following-possible-properties
+                  retry_max_delay: 500
+                  // etc
                 }
-            );
+              });
     
             this._cachingClient.on("error", function(err) {
                 // assert(err instanceof Error);
