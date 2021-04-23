@@ -10,7 +10,6 @@ import RedisClustr from 'redis-clustr';
 @injectable()
 export default class RedisCaching implements ICaching {
     
-
     //#region Fields
     
     private _cachingClient;
@@ -73,6 +72,7 @@ export default class RedisCaching implements ICaching {
                     return require('redis').createClient(port, host, options);
                 }, // default: redis.createClient. Function used to connect to redis, called with arguments above
                 redisOptions: {
+                    tls: {},
                     retry_strategy: function (options) {
                         if (options.error && options.error.code === "ECONNREFUSED") {
                             // End reconnecting on a specific error and flush all commands with
