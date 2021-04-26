@@ -38,7 +38,9 @@ export default class RedisCaching implements ICaching {
                 host,
                 {
                     retry_strategy: function (options) {
-                        console.log('a');
+                        const msg = `Redis connectedion failed. Attempting one more time!`;
+                        console.error(msg, options);
+                        Logger.error(msg, options);
                         if (options.error && options.error.code === "ECONNREFUSED") {
                             // End reconnecting on a specific error and flush all commands with
                             // a individual error
