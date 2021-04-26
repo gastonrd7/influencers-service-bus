@@ -38,7 +38,8 @@ export default class CachingService {
 
     public static async set(key: string, value: any): Promise<boolean> {
         try{
-            return await this.getInstance()._cachingClient.set(key, value);
+            const response = await this.getInstance()._cachingClient.set(key, value);
+            return Promise.resolve(response);
         }
         catch (e){
             console.error(e);
@@ -78,15 +79,14 @@ export default class CachingService {
             return Promise.resolve(true);
         }
         else{
-            console.log('cache', value, valueFromCache);
             const needUpdate = value > valueFromCache;
             if (needUpdate){
-                console.log('key updated');
+                Logger.log('key updated');
                 await this.getInstance()._cachingClient.setEx(key, expireSeconds, value);
                 return Promise.resolve(true);
             }
             else{
-                console.log('updated must be stopped!');
+                Logger.log('updated must be stopped!');
                 return Promise.resolve(false);
             }
         }
