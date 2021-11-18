@@ -8,6 +8,7 @@ import requestPayload from '../constants/requestPayload'
 import requestResponse from '../constants/requestResponse'
 import { Logger } from 'adme-common';
 import { SocialMediaRequestPayload, SocialMediaRequestResponse } from 'adme-common';
+import * as Globalmodels from 'influencers-models'; 
 
 
 export default class MessagingService {
@@ -39,6 +40,8 @@ export default class MessagingService {
     
     public static async publish(caller: string, subject: string, message):Promise<void>
     {
+        console.log('///TENTACLES ', message);
+        if ( !message[Globalmodels.messagingPayloadBaseFields._id] ) return Promise.reject(`The paylod should contain _id !`);
         await this.getInstance()._messagingClient.publish(subject, message);
         Logger.log(`${caller} has published: ${subject} ****************************************`);
         
