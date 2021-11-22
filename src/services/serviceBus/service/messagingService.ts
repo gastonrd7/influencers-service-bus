@@ -40,8 +40,8 @@ export default class MessagingService {
     
     public static async publish(caller: string, subject: string, message):Promise<void>
     {
-        console.log('///TENTACLES ', message);
-        if ( !message[Globalmodels.messagingPayloadBaseFields._id] ) return Promise.reject(`The paylod should contain _id !`);
+        // console.log('///TENTACLES ', message);
+        // if ( !message[Globalmodels.messagingPayloadBaseFields._id] ) return Promise.reject(`The paylod should contain _id !`);
         await this.getInstance()._messagingClient.publish(subject, message);
         Logger.log(`${caller} has published: ${subject} ****************************************`);
         
