@@ -43,9 +43,7 @@ export default class MessagingService {
     {
         // console.log('///TENTACLES ', message);
         // if ( !message[Globalmodels.messagingPayloadBaseFields._id] ) return Promise.reject(`The paylod should contain _id !`);
-        console.log('//////////////////////////////////////////////////////////////////');
-        console.log('... PUBLISH Yulian Publish: ', message);
-        console.log('//////////////////////////////////////////////////////////////////');
+        
         await this.getInstance()._messagingClient.publish(subject, message);
         Logger.log(`${caller} has published: ${subject} ****************************************`);
         
@@ -63,9 +61,7 @@ export default class MessagingService {
     public static async request(caller: string, subject: string, message: requestPayload | SocialMediaRequestPayload ):Promise<requestResponse | SocialMediaRequestResponse>
     {
         Logger.log(`Caller: ${caller} sent a request for the Subject: ${subject}. Payload: ${JSON.stringify(message)} ****************************************`);
-        console.log('//////////////////////////////////////////////////////////////////');
-        console.log('... REQUEST Yulian MessagingService: ', message);
-        console.log('//////////////////////////////////////////////////////////////////');
+        
         var start = new Date();
         
         let response = await this.getInstance()._messagingClient.request(subject.toString(), this.getInstance()._requestTimeout, message);
