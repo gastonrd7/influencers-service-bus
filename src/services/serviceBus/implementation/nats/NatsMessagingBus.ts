@@ -62,9 +62,9 @@ export default class NatsMessagingBus implements ImessagingBus {
         
     }
 
-    public async subscribe(subject: string, callback: subCallback.subcribeCallback):Promise<any>
+    public async subscribe(serviceName: string, subject: string, callback: subCallback.subcribeCallback):Promise<any>
     {
-        await this._natsClient.subscribe(subject, callback);
+        await this._natsClient.subscribe(subject, callback, { queue: serviceName });
     }
 
     public async unsubscribe(subscriptionId: number): Promise<any> {

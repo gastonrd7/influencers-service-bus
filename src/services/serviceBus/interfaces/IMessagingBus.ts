@@ -6,7 +6,7 @@ import { SocialMediaRequestPayload, SocialMediaRequestResponse } from 'adme-comm
 export default interface IMessageBus {
     publish(subject: string, message):Promise<void>;
     request(subject: string, timeout: number, message: requestPayload | SocialMediaRequestPayload):Promise<requestResponse | SocialMediaRequestResponse>;
-    subscribe(subject: string, callback: subCallback.subcribeCallback):Promise<any>;
+    subscribe(serviceName: string, subject: string, callback: subCallback.subcribeCallback):Promise<any>;
     unsubscribe(subscriptionId: number):Promise<any>;
     init():void;
     name:string

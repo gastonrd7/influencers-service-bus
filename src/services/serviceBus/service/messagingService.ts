@@ -51,7 +51,7 @@ export default class MessagingService {
 
     public static async subscribe(caller: string, subject: string, callback: subsCaller.subcribeCallback):Promise<void>
     {
-        await this.getInstance()._messagingClient.subscribe(subject, async (err, msg) => {
+        await this.getInstance()._messagingClient.subscribe(caller, subject, async (err, msg) => {
             await callback(err, msg);
     
         });

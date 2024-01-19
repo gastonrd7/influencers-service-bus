@@ -27,7 +27,7 @@ export class OtherMessagingBus implements IMessageBus {
         throw new Error('Method not implemented!');
     }
 
-    public async subscribe(subject: string, callback: subCallback.subcribeCallback):Promise<void>
+    public async subscribe(serviceName: string, subject: string, callback: subCallback.subcribeCallback):Promise<void>
     {
         throw new Error('Method not implemented!')
     }
