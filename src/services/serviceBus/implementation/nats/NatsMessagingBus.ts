@@ -29,20 +29,37 @@ export default class NatsMessagingBus implements ImessagingBus {
 
     //#region ImessagingBus implementation
 
-    public async init():Promise<void>{
-
-        var start = new Date();
-        this._natsClient = await connect({'url':`${process.env.NATS_URL}:${process.env.NATS_PORT}`, 'user':process.env.NATS_USER, 'pass':process.env.NATS_PASSWORD});
-        this._natsClient.on('connect', () => {
-            Logger.log(`Listener connected to Nats - Duration: ${new Date().valueOf() - start.valueOf()}ms`);
-        });
-        this._natsClient.on('close', () => {
-            Logger.log(`Stopped`);
-        });
-        this._natsClient.on('error', (e) => {
-            const msg = 'Error connecting to NATS';
-            console.log(msg, e);
-            Logger.error(msg, e);
+    public init(): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            const start = new Date();
+            console.log(`Connecting to Nats....`);
+            
+            connect({
+                'url': `${process.env.NATS_URL}:${process.env.NATS_PORT}`,
+                'user': process.env.NATS_USER,
+                'pass': process.env.NATS_PASSWORD
+            }).then((natsClient) => {
+                this._natsClient = natsClient;
+                
+                this._natsClient.on('connect', () => {
+                    console.log(`Listener connected to Nats - Duration: ${new Date().valueOf() - start.valueOf()}ms`);
+                    resolve();
+                });
+                
+                this._natsClient.on('close', () => {
+                    console.log(`Stopped`);
+                });
+                
+                this._natsClient.on('error', (e) => {
+                    const msg = 'Error connecting to NATS';
+                    console.log(msg, e);
+                    console.error(msg, e);
+                    reject(e); // Rechazar la promesa en caso de error
+                });
+            }).catch((error) => {
+                console.error('Error connecting to NATS:', error);
+                reject(error); // Rechazar la promesa en caso de error en la conexión
+            });
         });
     }
 
@@ -64,6 +81,7 @@ export default class NatsMessagingBus implements ImessagingBus {
 
     public async subscribe(serviceName: string, subject: string, callback: subCallback.subcribeCallback):Promise<any>
     {
+        // await this._natsClient.subscribe(subject, callback);
         await this._natsClient.subscribe(subject, callback, { queue: serviceName });
     }
 
