@@ -1,6 +1,6 @@
 const CACHING_TAG = {
     REDIS: "REDIS",
-    OTHER: "OTHER"
+    OTHER: "OTHER"   
 };
 
 export default CACHING_TAG;

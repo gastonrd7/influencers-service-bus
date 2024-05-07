@@ -28,11 +28,12 @@ import { Event as eventsEnum } from "./services/serviceBus/constants/format/even
 import { formatEvent, formatSubcriptionEvent } from "./services/serviceBus/constants/format/formatEvents";
 import formatRequest from "./services/serviceBus/constants/format/formatRequest";
 import { Source } from "./services/serviceBus/constants/format/sourcesEnum";
-import CachingService from './services/caching/service/CachingService';
+import CachingService, { CACHING_SERVICE_ENUM } from './services/caching/service/CachingService';
 
 
 export {
     CachingService,
+    CACHING_SERVICE_ENUM,
     MessagingService,
     RequestPayload,
     RequestResponse,
