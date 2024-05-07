@@ -9,6 +9,7 @@ export default interface ICaching {
     set(key: string, value: any) : Promise<boolean>;
     setEx(key: string, expireSeconds: number, value: any) : Promise<boolean>;
     get(key: string) : Promise<any | null>;
+    del(key: string) : Promise<void>;
     incrementBy(key: string, incrementAmount: number): Promise<void>;
     name:string
 

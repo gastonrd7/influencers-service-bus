@@ -13,7 +13,7 @@ let container = new Container();
 
 container.bind<IMessagingBus>(SERVICE_IDENTIFIER.MESSENGER).to(NatsMessagingBus).whenTargetNamed(MESSAGING_TAG.NATS);
 container.bind<IMessagingBus>(SERVICE_IDENTIFIER.MESSENGER).to(OtherMessagingBus).whenTargetNamed(MESSAGING_TAG.OTHER);
-container.bind<ICaching>(SERVICE_IDENTIFIER.CACHING).to(RedisCaching).whenTargetNamed(CACHING_TAG.REDIS);
-
+container.bind<ICaching>(SERVICE_IDENTIFIER.MODEL_HANDLING_REDIS).to(RedisCaching).whenTargetNamed(CACHING_TAG.REDIS);
+container.bind<ICaching>(SERVICE_IDENTIFIER.ESB_REDIS).to(RedisCaching).whenTargetNamed(CACHING_TAG.REDIS);
 
 export default container;

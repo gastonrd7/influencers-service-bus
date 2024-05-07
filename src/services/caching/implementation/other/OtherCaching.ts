@@ -10,6 +10,9 @@ export class OtherCaching implements ICaching {
         this.name = "Other Messaging serevice"
         throw new Error('This provider is not implemented!')
     }
+    del(key: string): Promise<void> {
+        throw new Error('Method not implemented.');
+    }
     setEx(key: string, expireSeconds: number, value: any): Promise<boolean> {
         throw new Error('Method not implemented.');
     }

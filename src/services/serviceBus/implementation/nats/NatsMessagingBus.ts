@@ -1,6 +1,6 @@
 import ImessagingBus from '../../interfaces/IMessagingBus'
 import * as subCallback from '../../specialTypes/functionsTypes'
-import {Client, connect, SubscriptionOptions} from 'ts-nats'
+import {Client, connect, Payload, SubscriptionOptions} from 'ts-nats'
 import { inject, injectable, named } from "inversify";
 import requestPayload from '../../constants/requestPayload'
 import requestResponse from '../../constants/requestResponse'
@@ -37,7 +37,8 @@ export default class NatsMessagingBus implements ImessagingBus {
             connect({
                 'url': `${process.env.NATS_URL}:${process.env.NATS_PORT}`,
                 'user': process.env.NATS_USER,
-                'pass': process.env.NATS_PASSWORD
+                'pass': process.env.NATS_PASSWORD,
+                "payload": Payload.JSON,
             }).then((natsClient) => {
                 this._natsClient = natsClient;
                 
@@ -67,21 +68,23 @@ export default class NatsMessagingBus implements ImessagingBus {
     
     public async publish(subject: string, message):Promise<void>
     {
-        await this._natsClient.publish(subject, JSON.stringify( message));
+        await this._natsClient.publish(subject, message);
     }
 
     public async request(subject: string, timeout: number, message: requestPayload | SocialMediaRequestPayload):Promise<requestResponse | SocialMediaRequestResponse>
     {
-        let responseMsg = await this._natsClient.request(subject, timeout, JSON.stringify( message ));
+        try {
+            let responseMsg = await this._natsClient.request(subject, timeout, message );
 
-        let response = Object.create(requestResponse.prototype);
-        return await Object.assign(response, JSON.parse(responseMsg.data));
-        
+            return responseMsg.data;
+            
+        } catch (error) {
+            console.log(`Error to request: ${subject}`, message);
+        }
     }
 
     public async subscribe(serviceName: string, subject: string, callback: subCallback.subcribeCallback):Promise<any>
     {
-        // await this._natsClient.subscribe(subject, callback);
         await this._natsClient.subscribe(subject, callback, { queue: serviceName });
     }
 
