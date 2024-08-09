@@ -1,8 +1,8 @@
 import * as universalModels from 'influencers-models';
 import {Event} from './eventsEnum'
 
-export async function formatEvent(model: universalModels.Model, event: Event, field?: String){
-    return await `${event.toString().toUpperCase()}.${model.toString()}${field? '.' : ''}${field? field : ''}`;
+export function formatEvent(model: universalModels.Model, event: Event, field?: String){
+    return `${event.toString().toUpperCase()}.${model.toString()}${field? '.' : ''}${field? field : ''}`;
 }
 
 export function formatSubcriptionEvent(model: universalModels.Model, event: Event, field: String, id?: string) : string{

@@ -29,6 +29,7 @@ import { formatEvent, formatSubcriptionEvent } from "./services/serviceBus/const
 import formatRequest from "./services/serviceBus/constants/format/formatRequest";
 import { Source } from "./services/serviceBus/constants/format/sourcesEnum";
 import CachingService, { CACHING_SERVICE_ENUM } from './services/caching/service/CachingService';
+import { getCircularReplacer } from './utils';
 
 
 export {
@@ -65,7 +66,8 @@ export {
     TraceItem,
     eventsEnum,
     formatEvent,
-    formatSubcriptionEvent
+    formatSubcriptionEvent,
+    getCircularReplacer
 }
 
 

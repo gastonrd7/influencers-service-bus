@@ -5,6 +5,7 @@ import SERVICE_IDENTIFIER from '../../config/identifiers';
 import container from "../../config/ioc_config";
 import { Logger } from 'adme-common';
 import uuid = require('uuid');
+import { getCircularReplacer } from '../../../utils';
 
 export enum CACHING_SERVICE_ENUM {
     MODEL_HANDLING_REDIS = "ModelHandlingRedis",
@@ -101,6 +102,46 @@ export default class CachingService {
         
     }
 
+    static async queuePush(serviceIdentifier: CACHING_SERVICE_ENUM, key: string, value: any): Promise<void> {
+        const instance = this.getInstance(serviceIdentifier);
+        const setKey = `${key}:set`;
+        let valueStr;
+        try {
+            valueStr = JSON.stringify(value, getCircularReplacer());
+        } catch (error) {
+            console.error(`Error parsing value to JSON:`, error, value);
+            throw error;
+            
+        }
+    
+        // Verificar si el valor ya existe en el conjunto
+        const isMember = await instance._cachingClient.sismember(setKey, valueStr);
+    
+        if (!isMember) {
+            // Agregar el valor al conjunto y a la lista
+            await instance._cachingClient.sadd(setKey, valueStr);
+            await instance._cachingClient.lpush(key, valueStr);
+        }
+    }
+
+    static async queuePop(serviceIdentifier: CACHING_SERVICE_ENUM, key: string): Promise<any> {
+        const instance = this.getInstance(serviceIdentifier);
+        const setKey = `${key}:set`;
+    
+        const result = await instance._cachingClient.rpop(key);
+        if (result) {
+            // Eliminar el valor del conjunto
+            await instance._cachingClient.srem(setKey, result);
+            return JSON.parse(result);
+        }
+        return null;
+    }
+
+    static async queueLength(serviceIdentifier: CACHING_SERVICE_ENUM, key: string): Promise<number> {
+        const instance = this.getInstance(serviceIdentifier);
+        return await instance._cachingClient.llen(key);
+    }
+
    
     //#endregion Constructors and Public
 
@@ -126,6 +167,26 @@ export default class CachingService {
                 break;
         }
     }
+
+    // private getCircularReplacer() {
+    //     const seen = new WeakSet();
+    //     return (key, value) => {
+    //         if (typeof value === "object" && value !== null) {
+    //             if (seen.has(value)) {
+    //                 return;
+    //             }
+    //             seen.add(value);
+    //         }
+    //         if (key === 'tracingHeaders' && value._currentContext) {
+    //             const span = value._currentContext.get(Symbol.for('OpenTelemetry Context Key SPAN'));
+    //             if (span && span.constructor.name === 'Span') {
+    //                 return { ...value, _currentContext: '[Span]' }; // Representar el Span sin eliminarlo
+    //             }
+    //         }
+    //         return value;
+    //     };
+    // }
+    
 
     //#endregion Private
     
