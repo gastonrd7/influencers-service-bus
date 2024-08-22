@@ -79,7 +79,8 @@ export default class NatsMessagingBus implements ImessagingBus {
             return responseMsg.data;
             
         } catch (error) {
-            console.log(`Error to request: ${subject}`, message);
+            console.log(`Error to request: ${subject}`, JSON.stringify(message, null, 2), error);
+            throw error;
         }
     }
 

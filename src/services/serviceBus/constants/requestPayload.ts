@@ -5,14 +5,14 @@ export default class RequestPayload extends BasePayload{
     constructor(){
         super();
     }
-    public init(model: globalModels.Model, select?: string[], where?, args?, id?, limit? : Number, page : Number = 0, computedField?: string, orderBy?: string[], asc = true ){
+    public init(model: globalModels.Model, select?: string[], where?, args?, ids?: any[], limit? : Number, page : Number = 0, computedField?: string, orderBy?: string[], asc = true ){
         this.model = model;
         this.select = select;
         this.where = where;
         this.args = args;
         this.limit = limit;
         this.page = page;
-        this.id = id;
+        this.ids = ids;
         this.computedField = computedField;
         this.orderBy = orderBy;
         this.asc = asc;
@@ -25,7 +25,7 @@ export default class RequestPayload extends BasePayload{
     public where;
     public limit? : Number;
     public page: Number;
-    public id?;
+    public ids?: any[];
     public computedField?: string;
     public orderBy: string[];
     public asc: boolean;

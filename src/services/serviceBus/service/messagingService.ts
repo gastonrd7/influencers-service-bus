@@ -1,20 +1,22 @@
 import IMessagingBus from '../interfaces/IMessagingBus';
-import { inject, injectable, named } from "inversify";
-import TAG from '../constants/tags'
+import { inject } from "inversify";
+import TAG from '../constants/tags';
 import SERVICE_IDENTIFIER from '../../config/identifiers';
 import container from "../../config/ioc_config";
-import * as subsCaller from '../specialTypes/functionsTypes'
-import requestPayload from '../constants/requestPayload'
-import requestResponse from '../constants/requestResponse'
+import * as subsCaller from '../specialTypes/functionsTypes';
+import requestPayload from '../constants/requestPayload';
+import requestResponse from '../constants/requestResponse';
 import { Logger } from 'adme-common';
-import { SocialMediaRequestPayload, SocialMediaRequestResponse } from 'adme-common';
+import { MetricNames, MetricsService, SocialMediaRequestResponse } from 'adme-common';
 import CachingService, { CACHING_SERVICE_ENUM } from '../../caching/service/CachingService';
 import uuid = require('uuid');
 import { performance } from 'perf_hooks';
+import { propagation, context, trace, Span, Tracer, SpanKind } from '@opentelemetry/api';
 
 const NATS_MAX_PAYLOAD_SIZE_BYTES = Number.parseInt(process.env.NATS_MAX_PAYLOAD_SIZE_KB) * 1024; // (200KB * 1024) => Bytes
 const ESB_REDIS_PAYLOAD_SIZE_BYTES = Number.parseInt(process.env.ESB_REDIS_PAYLOAD_SIZE_MB) * 1024 * 1024; // (10 MB * 1024 * 1024) => Bytes
 const ESB_REDIS_EXPIRITY_DURATION_SECS = Number.parseInt(process.env.ESB_REDIS_EXPIRITY_DURATION_SECS);
+
 export default class MessagingService {
 
     //#region Fields
@@ -23,62 +25,123 @@ export default class MessagingService {
     @inject(SERVICE_IDENTIFIER.MESSENGER) private _messagingClient: IMessagingBus;
     private _requestTimeout: number;
 
-
     //#endregion Fields
 
     //#region Constructors and Public 
 
     constructor() {
         if (MessagingService._instance) {
-            throw new Error("Error: Instantiation failed: Use NatsMessagingBus.getInstance() instead of new.");
+            throw new Error("Error: Instantiation failed: Use MessagingService.getInstance() instead of new.");
         }
 
         MessagingService._instance = this;
     }
 
     public static async init(requestTimeout: number = 100000): Promise<void> {
-        this.getInstance()._messagingClient = container.getNamed<IMessagingBus>(SERVICE_IDENTIFIER.MESSENGER, TAG.NATS);
-        this.getInstance()._requestTimeout = requestTimeout;
-        await this.getInstance()._messagingClient.init();
+        const instance = this.getInstance();
+        instance._messagingClient = container.getNamed<IMessagingBus>(SERVICE_IDENTIFIER.MESSENGER, TAG.NATS);
+        instance._requestTimeout = requestTimeout;
+
+        // Initialize the messaging client
+        await instance._messagingClient.init();
+        
     }
 
+    public static async publish(caller: string, subject: string, message, currentSpan: Span): Promise<void> {
+        const instance = this.getInstance();
+        const tracer = (global as any).tracer as Tracer;
+        const span = tracer.startSpan(`${caller}-${subject}`, { kind: SpanKind.PRODUCER }, trace.setSpan(context.active(), currentSpan));
 
-    public static async publish(caller: string, subject: string, message): Promise<void> {
         const payloadOrKeys = await this.splitPayload(caller, subject, message);
-        try {
-            await this.getInstance()._messagingClient.publish(subject, payloadOrKeys);
-            Logger.log(`${caller} has published: ${subject} ****************************************`);
 
-        } catch (error) {
-            console.log(`Error to publish: ${subject}`, payloadOrKeys);
-            throw error;
-        }
+        context.with(trace.setSpan(context.active(), span), async () => {
+            const tracingHeaders = {};
+            propagation.inject(context.active(), tracingHeaders);
+            payloadOrKeys.tracingHeaders = tracingHeaders;
 
+            span.setAttribute('span.kind', 'producer');
+            span.addEvent('publish', { subject, message });
 
+            try {
+                await instance._messagingClient.publish(subject, payloadOrKeys);
+                MetricsService.incrementCounter(MetricNames.MSG_MESSAGES_PUBLISHED, { service: caller });
+                MetricsService.observeHistogram(MetricNames.MSG_MESSAGES_PUBLISHED_RATE, { service: caller }, 1);
+                Logger.log(`${caller} has published: ${subject} ****************************************`);
+                span.end();
+            } catch (error) {
+                span.setAttribute('error', true);
+                span.addEvent('error', { message: error.message });
+                span.end();
+                console.log(`Error to publish: ${subject}`, payloadOrKeys);
+                throw error;
+            }
+        });
     }
 
     public static async subscribe(caller: string, subject: string, callback: subsCaller.subcribeCallback): Promise<void> {
-        await this.getInstance()._messagingClient.subscribe(caller, subject, async (err, payloadOrKeys) => {
-            let constructedPayload = await this.reconstructPayload(subject, payloadOrKeys['data'], false);
-            await callback(err, { ...payloadOrKeys, data: constructedPayload});
-            constructedPayload = null;
+        const instance = this.getInstance();
+        MetricsService.incrementCounter(MetricNames.MSG_MICROSERVICES_SUBSCRIPTIONS,{ service: caller });
 
+        await instance._messagingClient.subscribe(caller, subject, async (err, payloadOrKeys) => {
+            const tracer = (global as any).tracer as Tracer;
+            const parentSpanContext = propagation.extract(context.active(), payloadOrKeys.tracingHeaders);
+            const span = tracer.startSpan(subject, { kind: SpanKind.CONSUMER }, parentSpanContext);
+
+            context.with(trace.setSpan(context.active(), span), async () => {
+                let constructedPayload = await this.reconstructPayload(subject, payloadOrKeys['data'], false);
+                constructedPayload.tracingHeaders = span;
+                await callback(err, { ...payloadOrKeys, data: constructedPayload });
+                constructedPayload = null;
+                span.end();
+            });
+
+            // Update metric for messages received
+            MetricsService.incrementCounter(MetricNames.MSG_MESSAGES_RECEIVED, { service: caller });
+            MetricsService.observeHistogram(MetricNames.MSG_MESSAGES_RECEIVED_RATE, { service: caller }, 1); // Assuming this is a rate metric
         });
-        Logger.log(`${caller} has been subcripted to ${subject} - OK! ****************************************`);
+        Logger.log(`${caller} has been subscribed to ${subject} - OK! ****************************************`);
     }
 
-    public static async request(caller: string, subject: string, message: requestPayload | SocialMediaRequestPayload): Promise<requestResponse | SocialMediaRequestResponse> {
+    public static async request(caller: string, subject: string, message: any, currentSpan: Span): Promise<requestResponse | SocialMediaRequestResponse> {
+        const instance = this.getInstance();
+        const tracer = (global as any).tracer as Tracer;
+        const span: Span = tracer.startSpan(`${caller}-${subject}`, { kind: SpanKind.CLIENT }, trace.setSpan(context.active(), currentSpan));
+
         const payloadOrKeys = await this.splitPayload(caller, subject, message);
         Logger.log(`Caller: ${caller} sent a request for the Subject: ${subject}. Payload: ${JSON.stringify(payloadOrKeys)} ****************************************`);
 
         var start = new Date();
 
-        let responseOrKeys = await this.getInstance()._messagingClient.request(subject.toString(), this.getInstance()._requestTimeout, payloadOrKeys);
+        return context.with(trace.setSpan(context.active(), span), async () => {
+            const tracingHeaders = {};
+            propagation.inject(context.active(), tracingHeaders);
+            payloadOrKeys.tracingHeaders = tracingHeaders;
 
-        Logger.log(`Caller: ${caller} got the response for the Subject: ${subject} in ${new Date().valueOf() - start.valueOf()}ms ****************************************`);
-        return this.reconstructPayload(subject, responseOrKeys, true);
+            span.setAttribute('span.kind', 'client');
+            span.addEvent('request', { subject, message });
+
+            try {
+                let responseOrKeys = await instance._messagingClient.request(subject.toString(), instance._requestTimeout, payloadOrKeys);
+
+                const latency = new Date().valueOf() - start.valueOf();
+                Logger.log(`Caller: ${caller} got the response for the Subject: ${subject} in ${latency}ms ****************************************`);
+
+                // Update metric for request count and latency
+                MetricsService.incrementCounter(MetricNames.MSG_REQUEST, { route: subject, method: caller });
+                MetricsService.observeHistogram(MetricNames.MSG_REQUEST_RATE, { route: subject, method: caller }, 1); // Assuming this is a rate metric
+                MetricsService.observeHistogram(MetricNames.MSG_REQUEST_LATENCY_MS, { route: subject, method: caller }, latency);
+
+                span.end();
+                return this.reconstructPayload(subject, responseOrKeys, true);
+            } catch (error) {
+                span.setAttribute('error', true);
+                span.addEvent('error', { message: error.message });
+                span.addEvent('request', { caller, subject, message });
+                span.end();
+                throw error;
+            }
+        });
     }
-
 
     //#endregion Constructors and Public
 
@@ -89,7 +152,6 @@ export default class MessagingService {
     }
 
     private static async splitPayload(caller: string, subject: string, payload: any): Promise<any> {
-
         const startTransmitting = performance.now();
         let stringifiedPayload = JSON.stringify(payload);
         const size = Buffer.byteLength(stringifiedPayload);
@@ -119,7 +181,6 @@ export default class MessagingService {
     private static async reconstructPayload(subject: string, payloadOrKeys: any, deleteKeys: boolean): Promise<any> {
         try {
             if (Array.isArray(payloadOrKeys)) {
-                
                 const startTransmitting = payloadOrKeys.shift();
                 const startOverall = performance.now();
                 const payloadPromises = payloadOrKeys.map(key =>
@@ -136,7 +197,6 @@ export default class MessagingService {
                 }
 
                 if (payloads.length !== payloadOrKeys.length || payloads.includes(null) || payloads.includes(undefined) || payloads.includes('')) {
-
                     const endOverall = performance.now();
                     payloads.forEach((payload, index) => {
                         if (!payload) {
@@ -145,9 +205,8 @@ export default class MessagingService {
                     });
                     Logger.error(`ReconstructPayload finished in ${((endOverall - startOverall) / 1000).toFixed(2)} ms. Rescue Payloads: ${payloads.length} of ${payloadOrKeys.length} items.`);
                     throw new Error("Error: Some payloads were not found in the cache.");
-
-
                 }
+
                 let entirePayload = payloads.join('');
                 const constructedPayload = await JSON.parse(entirePayload);
                 const endOverall = performance.now();
@@ -157,13 +216,10 @@ export default class MessagingService {
             } else {
                 return payloadOrKeys;
             }
-
         } catch (error) {
             throw new Error("Error in reconstructPayload.");
         }
-
     }
 
     //#endregion Private
-
 }

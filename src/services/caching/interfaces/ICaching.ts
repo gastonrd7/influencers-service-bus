@@ -11,6 +11,12 @@ export default interface ICaching {
     get(key: string) : Promise<any | null>;
     del(key: string) : Promise<void>;
     incrementBy(key: string, incrementAmount: number): Promise<void>;
+    lpush(key: string, value: string): Promise<void> ;
+    rpop(key: string): Promise<string>;
+    llen(key: string): Promise<number>;
+    sadd(key: string, value: string): Promise<void>;
+    srem(key: string, value: string): Promise<void>;
+    sismember(key: string, value: string): Promise<boolean>;
     name:string
 
 }

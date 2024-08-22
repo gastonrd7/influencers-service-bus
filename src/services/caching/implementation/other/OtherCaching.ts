@@ -10,6 +10,24 @@ export class OtherCaching implements ICaching {
         this.name = "Other Messaging serevice"
         throw new Error('This provider is not implemented!')
     }
+    sadd(key: string, value: string): Promise<void> {
+        throw new Error('Method not implemented.');
+    }
+    srem(key: string, value: string): Promise<void> {
+        throw new Error('Method not implemented.');
+    }
+    sismember(key: string, value: string): Promise<boolean> {
+        throw new Error('Method not implemented.');
+    }
+    lpush(key: string, value: string): Promise<void> {
+        throw new Error('Method not implemented.');
+    }
+    rpop(key: string): Promise<string> {
+        throw new Error('Method not implemented.');
+    }
+    llen(key: string): Promise<number> {
+        throw new Error('Method not implemented.');
+    }
     del(key: string): Promise<void> {
         throw new Error('Method not implemented.');
     }
