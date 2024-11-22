@@ -54,6 +54,13 @@ export default class MessagingService {
 
         const payloadOrKeys = await this.splitPayload(caller, subject, message);
 
+        if (!payloadOrKeys) {
+            span.end();
+
+            throw new Error(`Error: Payload is empty. ${caller} cannot publish: ${subject}`);
+            ;
+        }
+
         context.with(trace.setSpan(context.active(), span), async () => {
             const tracingHeaders = {};
             propagation.inject(context.active(), tracingHeaders);
