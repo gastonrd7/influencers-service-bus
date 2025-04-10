@@ -44,7 +44,7 @@ export default class MessagingService {
 
         // Initialize the messaging client
         await instance._messagingClient.init();
-        
+
     }
 
     public static async publish(caller: string, subject: string, message, currentSpan: Span): Promise<void> {
@@ -87,7 +87,7 @@ export default class MessagingService {
 
     public static async subscribe(caller: string, subject: string, callback: subsCaller.subcribeCallback): Promise<void> {
         const instance = this.getInstance();
-        MetricsService.incrementCounter(MetricNames.MSG_MICROSERVICES_SUBSCRIPTIONS,{ service: caller });
+        MetricsService.incrementCounter(MetricNames.MSG_MICROSERVICES_SUBSCRIPTIONS, { service: caller });
 
         await instance._messagingClient.subscribe(caller, subject, async (err, payloadOrKeys) => {
             const tracer = (global as any).tracer as Tracer;
@@ -144,8 +144,12 @@ export default class MessagingService {
                 span.setAttribute('error', true);
                 span.addEvent('error', { message: error.message });
                 span.addEvent('request', { caller, subject, message });
+                console.log(error, { caller, subject, message })
                 span.end();
-                throw error;
+                throw new Error(
+                    `Error in messagingService request method. Caller: ${caller}, Subject: ${subject}, Message: ${message}. Original Error message: ${error.message}`,
+                    { cause: error }
+                );
             }
         });
     }
