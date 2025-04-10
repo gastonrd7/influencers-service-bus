@@ -146,10 +146,14 @@ export default class MessagingService {
                 span.addEvent('request', { caller, subject, message });
                 console.log(error, { caller, subject, message })
                 span.end();
-                throw new Error(
-                    `Error in messagingService request method. Caller: ${caller}, Subject: ${subject}, Message: ${message}. Original Error message: ${error.message}`,
-                    { cause: error }
-                );
+                throw new Error(JSON.stringify({
+                    message: `Error in messagingService request method`,
+                    caller,
+                    subject,
+                    Message: message,
+                    OriginalErrorMessage: error.message,
+                    cause: error
+                }, null, 2));
             }
         });
     }
